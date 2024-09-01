@@ -113,5 +113,31 @@ def run_cli_app():
         for i, row in enumerate(top_results.itertuples(index=False), 1):
             console.print(f"{i}. {dict(zip(analyze_based_on, row[:-1]))}: {row[-1]} times")
 
+        # Prompt to plot the results
+        plot_prompt = [
+            inquirer.Confirm(
+                'plot_results',
+                message="Would you like to plot these results?",
+                default=False
+            )
+        ]
+        plot_results = inquirer.prompt(plot_prompt)['plot_results']
+
+        if plot_results:
+            # Choose chart type for plotting
+            chart_type_prompt = [
+                inquirer.List(
+                    'chart_type',
+                    message="Choose the chart type to plot the results:",
+                    choices=['bar', 'pie', 'line', 'histogram', 'scatter']
+                )
+            ]
+            chart_type = inquirer.prompt(chart_type_prompt)['chart_type']
+
+            fig, ax = plt.subplots(figsize=(8, 6))
+            plot_chart(chart_type, top_results, analyze_based_on, ax)
+            plt.tight_layout()
+            plt.show()
+
 if __name__ == "__main__":
     run_cli_app()
