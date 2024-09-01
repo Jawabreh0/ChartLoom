@@ -43,12 +43,11 @@ def run_cli_app():
         inquirer.List(
             'chart',
             message="Choose the chart type:",
-            choices=['bar', 'pie', 'line', 'histogram', 'scatter', 'box', 'heatmap']
+            choices=['bar', 'pie', 'line', 'histogram', 'scatter']
         )
     ]
     chart_type = inquirer.prompt(chart_type_prompt)['chart']
 
-    # Plot the chart
     plot_chart(chart_type, df, analyze_based_on)
 
     # Final confirmation message
