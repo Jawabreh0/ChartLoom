@@ -3,7 +3,9 @@ import inquirer
 from file_utils import list_csv_files
 from data_utils import get_column_names
 from plot_utils import plot_chart
-import os 
+import os
+import matplotlib.pyplot as plt
+
 console = Console()
 
 def run_cli_app():
@@ -39,19 +41,39 @@ def run_cli_app():
     ]
     analyze_based_on = inquirer.prompt(column_prompt)['column']
 
-    chart_type_prompt = [
+    num_charts_prompt = [
         inquirer.List(
-            'chart',
-            message="Choose the chart type:",
-            choices=['bar', 'pie', 'line', 'histogram', 'scatter']
+            'num_charts',
+            message="How many charts do you want to plot (1-4)?",
+            choices=['1', '2', '3', '4']
         )
     ]
-    chart_type = inquirer.prompt(chart_type_prompt)['chart']
+    num_charts = int(inquirer.prompt(num_charts_prompt)['num_charts'])
 
-    plot_chart(chart_type, df, analyze_based_on)
+    chart_types = []
+    for i in range(num_charts):
+        chart_type_prompt = [
+            inquirer.List(
+                f'chart_{i+1}',
+                message=f"Choose the chart type for chart {i+1}:",
+                choices=['bar', 'pie', 'line', 'histogram', 'scatter']
+            )
+        ]
+        chart_type = inquirer.prompt(chart_type_prompt)[f'chart_{i+1}']
+        chart_types.append(chart_type)
 
-    # Final confirmation message
-    console.print(f"\nYou chose to analyze data based on '[green]{analyze_based_on}[/green]' and visualize it with a '[blue]{chart_type}[/blue]' chart.")
+    fig, axes = plt.subplots(1, num_charts, figsize=(5 * num_charts, 6))
+
+    if num_charts == 1:
+        plot_chart(chart_types[0], df, analyze_based_on, axes)
+    else:
+        for i, chart_type in enumerate(chart_types):
+            plot_chart(chart_type, df, analyze_based_on, axes[i])
+
+    plt.tight_layout()
+    plt.show()
+
+    console.print(f"\nYou chose to analyze data based on '[green]{analyze_based_on}[/green]' and visualize it with the following chart types: {[f'[blue]{ct}[/blue]' for ct in chart_types]}.")
 
 if __name__ == "__main__":
     run_cli_app()
