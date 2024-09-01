@@ -21,7 +21,7 @@ def plot_chart(chart_type, df, column):
     elif chart_type == 'pie':
         counts = df[column].value_counts()  
         autopct = lambda p: f'{p:.1f}%' if p >= 2.5 else ''
-        plt.pie(counts, labels=counts.index, autopct=autopct, pctdistance=0.85)
+        plt.pie(counts, labels=None, autopct=autopct, pctdistance=0.85)
         plt.title(f'Pie Chart of {column}')
         plt.gca().add_artist(plt.Circle((0,0),0.70,fc='white'))  
         plt.legend(counts.index, bbox_to_anchor=(1.05, 1), loc='upper left')  
